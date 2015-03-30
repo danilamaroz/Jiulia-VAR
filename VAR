@@ -1,0 +1,31 @@
+function OLS (y, x)
+  Y = y
+  X = x
+  β = inv((X'*X))*X'*Y
+  return(β)
+end
+
+data = randn(100, 5)
+function VAR (Y, p, direct = false, h_max = 12)
+  # the function should result in providing forecasts (+standard deviations), predicted values,
+  n = size(Y)[1]
+  m = size(Y)[2]
+  # creation of the data vector X
+  X = rand(1,n-p) # how to get rid of it?
+  B = rand(1, m*p) # get rid of this too
+  for i = 1:p
+    X = [X; Y[i:(n-p+i-1), :]']
+  end
+  X = X[2:,:]'
+
+  for ii = 1:m
+    # regress Ym on p lags of all the variables and correctly record the coefficients
+    # the X data matrix should be created before??. it should look like a vector of
+    # dim m*p ------ i.e. m elements lagged for one periood followed by the next m elements of the further lag etc.
+    β = OLS(Y[(p+1):, ii], X)
+    B = [B; β']
+  end
+  B = B[2:,:]
+
+  return(B)
+end
